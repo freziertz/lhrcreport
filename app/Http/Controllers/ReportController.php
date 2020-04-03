@@ -184,8 +184,18 @@ class ReportController extends Controller
                 $reportParameter['advocate'] = null;
                 $reportParameter['title'] = 'List of Cases/Clients Represented by Advocates from:  ' . $startdate . ' to '. $enddate ;
                 $rpt = 14;
-
                 break;
+
+            case 15:
+                $values = [ $startdate, $enddate];
+                $reports = DB::select('exec spGetClinicList  ?,?', $values);
+                $reportParameter['branch'] = null;
+                $reportParameter['unit'] = null;
+                $reportParameter['advocate'] = null;
+                $reportParameter['title'] = 'Clinic List from  ' . $startdate . ' to '. $enddate ;
+                $rpt = 15;
+                break;
+
 
 
 
@@ -380,8 +390,16 @@ class ReportController extends Controller
                     $dt = new Carbon($report->currentdate);
                     $report->currentdate = $dt->toFormattedDateString();
                 }
-
                 return view('reports.representedbyadvocate', compact('reports','reportParameter'));
+                break;
+
+            case 15:
+                foreach($reports as $report){
+                    $dt = new Carbon($report->clientattendeddate);
+                    $report->clientattendeddate = $dt->calendar();
+                }
+
+                return view('reports.cliniclist', compact('reports','reportParameter'));
                 break;
 
 
